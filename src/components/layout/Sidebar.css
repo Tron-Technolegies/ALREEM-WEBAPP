@@ -1,0 +1,91 @@
+.sidebar-container {
+    height: 100vh;
+    width: 20vw;
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-logo img {
+    height: 73px;
+    width: 99px;
+    margin-top: 6%;
+}
+
+.sidebar-logo {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #f0f0f0;
+    margin-bottom: 20px;
+}
+
+.sidebar-menus {
+    flex: 1;
+    padding: 0 20px;
+}
+
+.menu-box {
+    height: 50px;
+    width: 100%;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: transparent;
+}
+
+.menu-box:hover {
+    background-color: #f5f5f5;
+}
+
+.menu-box.active {
+    background-color: #4285F4;
+    color: white;
+}
+
+.menu-box.active .menu-icon,
+.menu-box.active .menu-text {
+    color: white;
+}
+
+.menu-icon {
+    font-size: 18px;
+    margin-right: 12px;
+    color: #6b7280;
+    flex-shrink: 0;
+}
+
+.menu-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    white-space: nowrap;
+}
+
+.menu-box.active .menu-icon,
+.menu-box.active .menu-text {
+    color: white;
+}
+
+.sidebar-logout {
+    padding: 20px;
+    border-top: 1px solid #f0f0f0;
+}
+
+.menu-box.logout {
+    margin-bottom: 0;
+}
+
+.menu-box.logout:hover {
+    background-color: #fee2e2;
+}
+
+.menu-box.logout:hover .menu-icon,
+.menu-box.logout:hover .menu-text {
+    color: #dc2626;
+}

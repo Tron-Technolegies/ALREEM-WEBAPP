@@ -1,0 +1,122 @@
+.login-container {
+  height: 100vh;
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-left-side {
+  height: 100vh;
+  width: 40%;
+  background-color: #ffffff;
+  background-image: url("/public/login-images/login-page-img.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.login-right-side {
+  width: 60%;
+  padding: 20px;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.alreem-logo {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.alreem-logo img {
+  width: 170px;
+  height: auto;
+}
+
+.alreem-login {
+  width: 100%;
+  max-width: 350px;
+}
+
+.alreem-login-heading {
+  margin-bottom: 30px;
+}
+
+.alreem-login-heading h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 5px;
+  margin-top: 0;
+}
+
+.alreem-login-heading p {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+}
+
+.login-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 10px;
+  color: #9ca3af;
+  font-size: 16px;
+}
+
+.login-inputs input {
+  padding: 12px 16px 12px 40px;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+  outline: none;
+  background-color: #ffffff;
+  transition: border-color 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.login-inputs input:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+.login-inputs input::placeholder {
+  color: #9ca3af;
+}
+
+.login-inputs button {
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 120px;
+  align-self: flex-start;
+}
+
+.login-inputs button:hover {
+  background-color: #1d4ed8;
+}
