@@ -15,76 +15,60 @@ import { Link, useNavigate } from "react-router-dom";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-const UsersList = () => {
-  const [members, setMembers] = useState([]);
+const PlansList = () => {
+  const [plans, setPlans] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [filter, setFilter] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedPlanId, setSelectedPlanId] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch members from backend
+  // Fetch plans from backend
   useEffect(() => {
-    fetchMembers();
+    fetchPlans();
   }, []);
 
-  const fetchMembers = () => {
-    API.get("/members/view_members")
-      .then((res) => setMembers(res.data))
-      .catch((err) => console.error("Error fetching members:", err));
+  const fetchPlans = () => {
+    API.get("/members/view_plans")
+      .then((res) => {
+        console.log("Fetched plans data:", res.data); // For debugging
+        setPlans(Array.isArray(res.data.plans) ? res.data.plans : []);
+      })
+      .catch((err) => {
+        console.error("Error fetching plans:", err);
+        setPlans([]);
+      });
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    if (!window.confirm("Are you sure you want to delete this plan?")) return;
     try {
-      await API.delete(`/members/delete_member/${id}`);
-      setMembers(members.filter((m) => m.id !== id));
+      await API.delete(`/plans/delete_plan/${id}`);
+      setPlans(plans.filter((p) => p.id !== id));
     } catch (err) {
-      console.error("Error deleting member:", err);
-    }
-  };
-
-  const handleDownloadInvoice = async (id) => {
-    try {
-      const res = await API.get(`/members/download_invoice/${id}/`, {
-        responseType: "blob",
-      });
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `invoice_${id}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (err) {
-      console.error("Error downloading invoice:", err);
+      console.error("Error deleting plan:", err);
     }
   };
 
   // Menu handling
   const handleMenuClick = (event, id) => {
     setAnchorEl(event.currentTarget);
-    setSelectedUserId(id);
+    setSelectedPlanId(id);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setSelectedUserId(null);
+    setSelectedPlanId(null);
   };
 
   const handleEdit = () => {
-    navigate(`/users/${selectedUserId}/edit`);
+    navigate(`/plans/${selectedPlanId}/edit`);
     handleMenuClose();
   };
 
   const handleDeleteClick = () => {
-    handleDelete(selectedUserId);
-    handleMenuClose();
-  };
-
-  const handleDownloadClick = () => {
-    handleDownloadInvoice(selectedUserId);
+    handleDelete(selectedPlanId);
     handleMenuClose();
   };
 
@@ -99,11 +83,11 @@ const UsersList = () => {
     setPage(0);
   };
 
-  const filteredRows = members.filter(
+  const filteredRows = plans.filter(
     (row) =>
-      row.name.toLowerCase().includes(filter.toLowerCase()) ||
-      row.plan_type.toLowerCase().includes(filter.toLowerCase()) ||
-      row.status.toLowerCase().includes(filter.toLowerCase())
+      row.name?.toLowerCase().includes(filter.toLowerCase()) ||
+      row.description?.toLowerCase().includes(filter.toLowerCase()) ||
+      row.price?.toString().includes(filter)
   );
 
   return (
@@ -116,26 +100,22 @@ const UsersList = () => {
           onChange={handleFilterChange}
           size="small"
         />
-        <Link to="/users/add">
+        <Link to="/plans/add">
           <Button variant="contained" style={{ marginLeft: "10px" }}>
-            Add User
+            Add Plan
           </Button>
         </Link>
       </div>
 
       {/* Table */}
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="users table">
+        <Table sx={{ minWidth: 650 }} aria-label="plans table">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell>Plan</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Due Amount</TableCell>
-              <TableCell>Leave</TableCell>
-              <TableCell>Rejoin</TableCell>
-              <TableCell>Expire</TableCell>
-              <TableCell>Status</TableCell>
+              <TableCell>Price</TableCell>
+              <TableCell>Duration</TableCell>
+
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -143,13 +123,9 @@ const UsersList = () => {
             {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
               <TableRow key={row.id}>
                 <TableCell>{row.name}</TableCell>
-                <TableCell>{row.plan_type}</TableCell>
-                <TableCell>{row.phone}</TableCell>
-                <TableCell>{row.due_amount || "N/A"}</TableCell>
-                <TableCell>{row.leave_date || "N/A"}</TableCell>
-                <TableCell>{row.rejoin_date || "N/A"}</TableCell>
-                <TableCell>{row.expire_date}</TableCell>
-                <TableCell>{row.status}</TableCell>
+                <TableCell>{row.price || "N/A"}</TableCell>
+                <TableCell>{row.duration_days || "N/A"}</TableCell>
+
                 <TableCell>
                   <IconButton onClick={(e) => handleMenuClick(e, row.id)}>
                     <MoreVertIcon />
@@ -165,7 +141,6 @@ const UsersList = () => {
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
         <MenuItem onClick={handleEdit}>Edit</MenuItem>
         <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
-        <MenuItem onClick={handleDownloadClick}>Download</MenuItem>
       </Menu>
 
       {/* Pagination */}
@@ -182,4 +157,4 @@ const UsersList = () => {
   );
 };
 
-export default UsersList;
+export default PlansList;
