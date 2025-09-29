@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://alreem-7r91.onrender.com/",
+  baseURL: "https://al-reem-backend.onrender.com",
   withCredentials: true,
 });
 
