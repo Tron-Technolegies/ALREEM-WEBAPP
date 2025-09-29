@@ -8,8 +8,6 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  LineChart,
-  Line,
   PieChart,
   Pie,
   Cell,
@@ -42,25 +40,28 @@ export default function Dashboard() {
   const COLORS = ["#0088FE", "#00C49F"];
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="grid grid-cols-3 gap-6 ">
+    <div className="p-4 md:p-6 space-y-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <Card>
-          <CardContent className="bg-#F3F9F9">
-            <h3>Active Members</h3>
+          <CardContent className="bg-[#F3F9F9]">
+            <h3 className="text-lg font-semibold">Active Members</h3>
             <p className="text-2xl font-bold">{stats.activeMembers}</p>
             <p className="text-green-600 text-sm">+25% from last month</p>
           </CardContent>
         </Card>
+
         <Card>
           <CardContent>
-            <h3>New Members</h3>
+            <h3 className="text-lg font-semibold">New Members</h3>
             <p className="text-2xl font-bold">{stats.newMembers}</p>
             <p className="text-green-600 text-sm">+18% from last month</p>
           </CardContent>
         </Card>
+
         <Card>
           <CardContent>
-            <h3>New Enquiries</h3>
+            <h3 className="text-lg font-semibold">New Enquiries</h3>
             <p className="text-2xl font-bold">{stats.newEnquiry}</p>
             <p className="text-green-600 text-sm">+7% from last month</p>
           </CardContent>
@@ -68,11 +69,11 @@ export default function Dashboard() {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Members Growth Chart */}
         <Card>
           <CardContent>
-            <h3 className="mb-4">Total Members Growth</h3>
+            <h3 className="mb-4 text-lg font-semibold">Total Members Growth</h3>
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={growthData}>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -90,7 +91,7 @@ export default function Dashboard() {
         {/* Pie Chart */}
         <Card>
           <CardContent>
-            <h3 className="mb-4">Members vs Trainers</h3>
+            <h3 className="mb-4 text-lg font-semibold">Members vs Trainers</h3>
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie

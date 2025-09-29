@@ -124,7 +124,7 @@ const UsersList = () => {
       </div>
 
       {/* Table */}
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
         <Table sx={{ minWidth: 650 }} aria-label="users table">
           <TableHead>
             <TableRow>

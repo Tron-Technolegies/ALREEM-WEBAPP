@@ -3,6 +3,7 @@
   display: flex;
   width: 100%;
   box-sizing: border-box;
+  flex-wrap: wrap; /* allow wrapping on smaller screens */
 }
 
 .login-left-side {
@@ -17,13 +18,12 @@
 
 .login-right-side {
   width: 60%;
-  padding: 20px;
+  padding: 50px;
   font-family: "Inter", sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
   background-color: #ffffff;
-  border-radius: 10px;
   box-sizing: border-box;
 }
 
@@ -39,7 +39,7 @@
 
 .alreem-login {
   width: 100%;
-  max-width: 350px;
+  max-width: 400px;
 }
 
 .alreem-login-heading {
@@ -94,7 +94,6 @@
 
 .login-inputs input:focus {
   border-color: #3b82f6;
-  outline: none;
 }
 
 .login-inputs input::placeholder {
@@ -112,11 +111,22 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   margin-top: 10px;
-  width: 100%;
-  max-width: 120px;
-  align-self: flex-start;
+  width: 100%; /* fill full width of form */
+  box-sizing: border-box;
 }
 
 .login-inputs button:hover {
   background-color: #1d4ed8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .login-left-side {
+    display: none; /* hide left image on small screens */
+  }
+  .login-right-side {
+    width: 100%;
+    padding: 30px 20px;
+    border-radius: 0;
+  }
 }
