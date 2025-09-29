@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "../login/Login.css";
+import API from "../../utils/api";
 import { FaUserAlt, FaMobile, FaEnvelope } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import alreemlogo from "../../../public/logos/alreem-logo.png";
@@ -30,10 +31,10 @@ const Login = () => {
       formData.append("username", username);
       formData.append("password", password);
 
-      const response = await fetch("https://alreem-7r91.onrender.com/members/admin_login", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
+      const response = await API.post("/members/admin_login", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       const data = await response.json();

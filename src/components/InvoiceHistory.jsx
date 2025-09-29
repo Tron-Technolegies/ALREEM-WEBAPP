@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import API from "../utils/api";
 import {
   Table,
   TableBody,
@@ -15,12 +16,14 @@ import { SlCloudDownload } from "react-icons/sl";
 export default function InvoiceHistory() {
   const [invoices, setInvoices] = useState([]);
 
-  // Fetch invoices from Django backend
   useEffect(() => {
-    fetch("https://alreem-7r91.onrender.com/payments/all_invoices")
-      .then((res) => res.json())
-      .then((data) => setInvoices(data))
-      .catch((err) => console.error("Error fetching invoices:", err));
+    API.get("/payments/all_invoices")
+      .then((res) => {
+        setInvoices(res.data);
+      })
+      .catch((err) => {
+        console.error("Error fetching invoices:", err);
+      });
   }, []);
 
   return (
