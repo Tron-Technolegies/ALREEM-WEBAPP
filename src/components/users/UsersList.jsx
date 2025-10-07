@@ -12,7 +12,18 @@ import TablePagination from "@mui/material/TablePagination";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { Link, useNavigate } from "react-router-dom";
-import { IconButton, Menu, MenuItem } from "@mui/material";
+import {
+  IconButton,
+  Menu,
+  MenuItem,
+  Box,
+  useMediaQuery,
+  useTheme,
+  Card,
+  CardContent,
+  Typography,
+  Grid,
+} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const UsersList = () => {
@@ -23,6 +34,8 @@ const UsersList = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   // Fetch members from backend
   useEffect(() => {
@@ -106,60 +119,143 @@ const UsersList = () => {
       row.status.toLowerCase().includes(filter.toLowerCase())
   );
 
+  // Mobile Card View
+  const MobileCardView = ({ row }) => (
+    <Card sx={{ mb: 2 }}>
+      <CardContent>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "start", mb: 1 }}>
+          <Typography variant="h6" component="div">
+            {row.name}
+          </Typography>
+          <IconButton onClick={(e) => handleMenuClick(e, row.id)} size="small">
+            <MoreVertIcon />
+          </IconButton>
+        </Box>
+        <Grid container spacing={1}>
+          <Grid item xs={6}>
+            <Typography variant="body2" color="text.secondary">
+              Plan:
+            </Typography>
+            <Typography variant="body1">{row.plan_type}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2" color="text.secondary">
+              Phone:
+            </Typography>
+            <Typography variant="body1">{row.phone}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2" color="text.secondary">
+              Due Amount:
+            </Typography>
+            <Typography variant="body1">{row.due_amount || "N/A"}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2" color="text.secondary">
+              Status:
+            </Typography>
+            <Typography variant="body1">{row.status}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2" color="text.secondary">
+              Leave:
+            </Typography>
+            <Typography variant="body1">{row.leave_date || "N/A"}</Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Typography variant="body2" color="text.secondary">
+              Rejoin:
+            </Typography>
+            <Typography variant="body1">{row.rejoin_date || "N/A"}</Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography variant="body2" color="text.secondary">
+              Expire:
+            </Typography>
+            <Typography variant="body1">{row.expire_date}</Typography>
+          </Grid>
+        </Grid>
+      </CardContent>
+    </Card>
+  );
+
   return (
-    <div style={{ fontFamily: "Poppins, sans-serif" }}>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "10px" }}>
+    <Box sx={{ fontFamily: "Poppins, sans-serif", p: { xs: 1, sm: 2 } }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
+          gap: { xs: 1, sm: 0 },
+          justifyContent: "flex-end",
+          marginBottom: "10px",
+        }}
+      >
         <TextField
           label="Search Filters"
           variant="outlined"
           value={filter}
           onChange={handleFilterChange}
           size="small"
+          fullWidth={isMobile}
         />
-        <Link to="/users/add">
-          <Button variant="contained" style={{ marginLeft: "10px" }}>
+        <Link to="/users/add" style={{ textDecoration: "none" }}>
+          <Button
+            variant="contained"
+            fullWidth={isMobile}
+            sx={{ marginLeft: { sm: "10px" }, minWidth: { xs: "100%", sm: "auto" } }}
+          >
             Add User
           </Button>
         </Link>
-      </div>
+      </Box>
 
-      {/* Table */}
-      <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
-        <Table sx={{ minWidth: 650 }} aria-label="users table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Plan</TableCell>
-              <TableCell>Phone</TableCell>
-              <TableCell>Due Amount</TableCell>
-              <TableCell>Leave</TableCell>
-              <TableCell>Rejoin</TableCell>
-              <TableCell>Expire</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-              <TableRow key={row.id}>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.plan_type}</TableCell>
-                <TableCell>{row.phone}</TableCell>
-                <TableCell>{row.due_amount || "N/A"}</TableCell>
-                <TableCell>{row.leave_date || "N/A"}</TableCell>
-                <TableCell>{row.rejoin_date || "N/A"}</TableCell>
-                <TableCell>{row.expire_date}</TableCell>
-                <TableCell>{row.status}</TableCell>
-                <TableCell>
-                  <IconButton onClick={(e) => handleMenuClick(e, row.id)}>
-                    <MoreVertIcon />
-                  </IconButton>
-                </TableCell>
+      {/* Conditional rendering: Cards for mobile, Table for desktop */}
+      {isMobile ? (
+        <Box>
+          {filteredRows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+            <MobileCardView key={row.id} row={row} />
+          ))}
+        </Box>
+      ) : (
+        <TableContainer component={Paper} sx={{ overflowX: "auto" }}>
+          <Table sx={{ minWidth: 650 }} aria-label="users table">
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Plan</TableCell>
+                <TableCell>Phone</TableCell>
+                <TableCell>Due Amount</TableCell>
+                <TableCell>Leave</TableCell>
+                <TableCell>Rejoin</TableCell>
+                <TableCell>Expire</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {filteredRows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row) => (
+                  <TableRow key={row.id}>
+                    <TableCell>{row.name}</TableCell>
+                    <TableCell>{row.plan_type}</TableCell>
+                    <TableCell>{row.phone}</TableCell>
+                    <TableCell>{row.due_amount || "N/A"}</TableCell>
+                    <TableCell>{row.leave_date || "N/A"}</TableCell>
+                    <TableCell>{row.rejoin_date || "N/A"}</TableCell>
+                    <TableCell>{row.expire_date}</TableCell>
+                    <TableCell>{row.status}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={(e) => handleMenuClick(e, row.id)}>
+                        <MoreVertIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
 
       {/* Menu for actions */}
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
@@ -178,7 +274,7 @@ const UsersList = () => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
-    </div>
+    </Box>
   );
 };
 

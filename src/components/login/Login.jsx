@@ -27,12 +27,27 @@ const Login = () => {
       formData.append("username", username);
       formData.append("password", password);
 
+      // API call to Django backend
       const response = await API.post("/members/admin_login", formData);
 
       setLoading(false);
 
       if (response.status === 200 && response.data.status === "success") {
-        navigate("/dashboard");
+        // Save JWT token, role, and branch info
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("role", response.data.role);
+        if (response.data.branch_id) {
+          localStorage.setItem("branch_id", response.data.branch_id);
+        }
+
+        // Redirect based on role
+        if (response.data.role === "superuser") {
+          navigate("/dashboard");
+        } else if (response.data.role === "branch_admin") {
+          navigate("/dashboard");
+        } else {
+          navigate("/dashboard"); // fallback
+        }
       } else {
         setError(response.data.message || "Login failed!");
       }

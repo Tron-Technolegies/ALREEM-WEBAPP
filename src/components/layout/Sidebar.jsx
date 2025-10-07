@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./Sidebar.css";
 import sidebarlogo from "../../../public/logos/alreem-logo.png";
+import API from "../../utils/api";
 
 /*icons import*/
 import { IoHomeOutline } from "react-icons/io5";
@@ -14,6 +15,7 @@ import { MdOutlineWarning } from "react-icons/md";
 import { IoMdSettings } from "react-icons/io";
 import { TbLogout } from "react-icons/tb";
 import { FaCrown } from "react-icons/fa6";
+import { AiOutlineBranches } from "react-icons/ai";
 import { Link, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
@@ -27,24 +29,19 @@ const Sidebar = () => {
   };
 
   // Logout function
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("https://alreem-7r91.onrender.com/members/admin_logout", {
-        method: "POST",
-        credentials: "include",
-      });
+  const logout = () => {
+    API.post("/members/admin_logout").then((res) => {
+      if (res.data.status === "success") {
+        // 1. Clear tokens/cookies/localStorage
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
 
-      const data = await response.json();
-
-      if (response.ok && data.status === "success") {
-        //  Redirect user to login page after successful logout
-        navigate("/");
+        // 2. Redirect & replace history (so back button won't go to dashboard)
+        navigate("/", { replace: true });
       } else {
-        console.error("Logout failed:", data.message);
+        console.error("Logout failed:", res.data.message);
       }
-    } catch (err) {
-      console.error("Logout error:", err);
-    }
+    });
   };
 
   return (
@@ -92,6 +89,15 @@ const Sidebar = () => {
           <span className="menu-text">Plans</span>
         </Link>
 
+        <Link
+          to="/branches"
+          className={`menu-box ${activeMenu === "Branches" ? "active" : ""}`}
+          onClick={() => handleMenuClick("Branches")}
+        >
+          <AiOutlineBranches className="menu-icon" />
+          <span className="menu-text">Branches</span>
+        </Link>
+
         {/*
         <Link
           to="/attendance"
@@ -111,15 +117,36 @@ const Sidebar = () => {
           <RiPieChart2Fill className="menu-icon" />
           <span className="menu-text">Invoice</span>
         </Link>
+        <Link
+          to="/pending"
+          className={`menu-box ${activeMenu === "Pending" ? "active" : ""}`}
+          onClick={() => handleMenuClick("Pending")}
+        >
+          <HiClock className="menu-icon" />
+          <span className="menu-text">Pending</span>
+        </Link>
 
-        {/* <Link to="/pending" className={menu-box ${activeMenu === "Pending" ? "active" : ""}}
-         onClick={() => handleMenuClick("Pending")} > <HiClock className="menu-icon" /> <span className="menu-text">Pending</span> </Link> 
-         <Link to="/expired" className={menu-box ${activeMenu === "Expired" ? "active" : ""}} onClick={() => handleMenuClick("Expired")} > <MdOutlineWarning className="menu-icon" /> <span className="menu-text">Expired</span> </Link>
-          <Link to="/settings" className={menu-box ${activeMenu === "Settings" ? "active" : ""}} onClick={() => handleMenuClick("Settings")} > <IoMdSettings className="menu-icon" /> <span className="menu-text">Settings</span> </Link> */}
+        <Link
+          to="/expired"
+          className={`menu-box ${activeMenu === "Expired" ? "active" : ""}`}
+          onClick={() => handleMenuClick("Expired")}
+        >
+          <MdOutlineWarning className="menu-icon" />
+          <span className="menu-text">Expired</span>
+        </Link>
+
+        <Link
+          to="/add/branch/admin"
+          className={`menu-box ${activeMenu === "Settings" ? "active" : ""}`}
+          onClick={() => handleMenuClick("Settings")}
+        >
+          <IoMdSettings className="menu-icon" />
+          <span className="menu-text">Settings</span>
+        </Link>
       </div>
 
       {/* Logout Button */}
-      <div className="sidebar-logout" onClick={handleLogout}>
+      <div className="sidebar-logout" onClick={logout}>
         <div className="menu-box logout">
           <TbLogout className="menu-icon" />
           <span className="menu-text">Log out</span>

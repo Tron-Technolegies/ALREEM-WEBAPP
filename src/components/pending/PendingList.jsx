@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import API from "../../utils/api";
 import {
   Table,
   TableBody,
@@ -10,122 +11,137 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  CircularProgress,
+  Box,
+  Typography,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-const rows = [
-  {
-    id: 1,
-    user: "Adam",
-    plan: "Monthly",
-    mob: "9786543210",
-    amount: "₹ 3000",
-    paid: "₹ 2000",
-    pending: "₹ 1000",
-  },
-  {
-    id: 2,
-    user: "Adam",
-    plan: "Monthly",
-    mob: "9786543210",
-    amount: "₹ 3000",
-    paid: "₹ 2000",
-    pending: "₹ 1000",
-  },
-  {
-    id: 3,
-    user: "Adam",
-    plan: "Monthly",
-    mob: "9786543210",
-    amount: "₹ 3000",
-    paid: "₹ 2000",
-    pending: "₹ 1000",
-  },
-  {
-    id: 4,
-    user: "Adam",
-    plan: "Yearly",
-    mob: "9786543210",
-    amount: "₹ 3000",
-    paid: "₹ 2000",
-    pending: "₹ 1000",
-  },
-  {
-    id: 5,
-    user: "Adam",
-    plan: "Monthly",
-    mob: "9786543210",
-    amount: "₹ 3000",
-    paid: "₹ 2000",
-    pending: "₹ 1000",
-  },
-];
-
 export default function PendingList() {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedRow, setSelectedRow] = React.useState(null);
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedMember, setSelectedMember] = useState(null);
   const open = Boolean(anchorEl);
 
-  const handleClick = (event, row) => {
+  // Fetch pending members on mount
+  useEffect(() => {
+    fetchPendingMembers();
+  }, []);
+
+  const fetchPendingMembers = async () => {
+    try {
+      setLoading(true);
+      const res = await API.get("/members/pending_members", { withCredentials: true });
+      setMembers(res.data);
+    } catch (err) {
+      console.error("Error fetching pending members:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Menu handlers
+  const handleClick = (event, member) => {
     setAnchorEl(event.currentTarget);
-    setSelectedRow(row);
+    setSelectedMember(member);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
-    setSelectedRow(null);
+    setSelectedMember(null);
+  };
+
+  // Example actions
+  const handleViewProfile = () => {
+    console.log("View profile:", selectedMember);
+    handleClose();
+  };
+
+  const handleEdit = () => {
+    console.log("Edit member:", selectedMember);
+    handleClose();
+  };
+
+  const handleInvoice = () => {
+    console.log("Download invoice for:", selectedMember);
+    handleClose();
+  };
+
+  const handleRemove = () => {
+    console.log("Remove member:", selectedMember);
+    handleClose();
+  };
+
+  // Compute paid amount
+  const getPaidAmount = (member) => {
+    const paid = (member.total_fee || 0) - (member.due_amount || 0);
+    return paid;
   };
 
   return (
     <Paper className="rounded-lg bg-white p-4">
       {/* Header */}
-      <div className="bg-[#F5F5F5] rounded-lg p-4 mb-4">
-        <p className="font-semibold">Balance Pending</p>
-      </div>
-      <div className="mb-2">
-        <p className="text-lg font-medium">Pending List</p>
-      </div>
+      <Box className="bg-[#F5F5F5] rounded-lg p-4 mb-4">
+        <Typography fontWeight={600}>Balance Pending</Typography>
+      </Box>
 
-      {/* Table */}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead className="bg-gray-100">
-            <TableRow>
-              <TableCell>User</TableCell>
-              <TableCell>Plan</TableCell>
-              <TableCell>Mob Number</TableCell>
-              <TableCell>Amount</TableCell>
-              <TableCell>Paid</TableCell>
-              <TableCell>Pending</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow key={row.id} className="hover:bg-gray-50">
-                <TableCell>{row.user}</TableCell>
-                <TableCell>{row.plan}</TableCell>
-                <TableCell>{row.mob}</TableCell>
-                <TableCell>{row.amount}</TableCell>
-                <TableCell>{row.paid}</TableCell>
-                <TableCell>{row.pending}</TableCell>
-                <TableCell>
-                  <IconButton onClick={(e) => handleClick(e, row)}>
-                    <MoreVertIcon />
-                  </IconButton>
-                </TableCell>
+      <Box mb={2}>
+        <Typography variant="h6" fontWeight={500}>
+          Pending List
+        </Typography>
+      </Box>
+
+      {/* Loading state */}
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" height={200}>
+          <CircularProgress />
+        </Box>
+      ) : members.length === 0 ? (
+        <Box display="flex" justifyContent="center" alignItems="center" height={100}>
+          <Typography>No pending members found.</Typography>
+        </Box>
+      ) : (
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead className="bg-gray-100">
+              <TableRow>
+                <TableCell>User</TableCell>
+                <TableCell>Plan</TableCell>
+                <TableCell>Mob Number</TableCell>
+                <TableCell>Amount</TableCell>
+                <TableCell>Paid</TableCell>
+                <TableCell>Pending</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {members.map((member) => (
+                <TableRow key={member.id} className="hover:bg-gray-50">
+                  <TableCell>{member.name}</TableCell>
+                  <TableCell>{member.plan_type || "N/A"}</TableCell>
+                  <TableCell>{member.phone}</TableCell>
+                  <TableCell>₹ {member.total_fee || 0}</TableCell>
+                  <TableCell>₹ {getPaidAmount(member)}</TableCell>
+                  <TableCell>₹ {member.due_amount || 0}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={(e) => handleClick(e, member)}>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
 
       {/* Action Menu */}
       <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-        <MenuItem onClick={handleClose}>View Profile</MenuItem>
-        <MenuItem onClick={handleClose}>Edit</MenuItem>
-        <MenuItem onClick={handleClose}>Invoice</MenuItem>
-        <MenuItem onClick={handleClose} className="!text-red-500">
+        <MenuItem onClick={handleViewProfile}>View Profile</MenuItem>
+        <MenuItem onClick={handleEdit}>Edit</MenuItem>
+        <MenuItem onClick={handleInvoice}>Invoice</MenuItem>
+        <MenuItem onClick={handleRemove} sx={{ color: "red" }}>
           Remove
         </MenuItem>
       </Menu>

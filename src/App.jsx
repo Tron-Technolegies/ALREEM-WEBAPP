@@ -20,6 +20,10 @@ import SingleStaff from "./components/trainers&staffs/SingleStaff";
 import EditStaff from "./components/trainers&staffs/EditStaff";
 import PlansList from "./components/plans/PlanList";
 import EditPlan from "./components/plans/EditPlan";
+import AddBranchForm from "./components/Branch/AddBranchForm";
+import BranchList from "./components/Branch/BranchList";
+import AddBranchAdmin from "./components/Branchadmin/AddBranchAdmin";
+import EditBranchForm from "./components/Branch/EditBranchForm";
 // import Sidebar from "./components/layout/Sidebar";
 // import Navbar from "./components/layout/Navbar";
 // import Tron from "./pages/Tron";
@@ -73,6 +77,20 @@ const App = () => {
 
             { path: "staff/:id", element: <SingleStaff /> },
             { path: "edit_trainer_staff/:id", element: <EditStaff /> },
+
+            {
+              path: "add/branch",
+              element: <AddBranchForm />,
+            },
+            {
+              path: "edit_branch/:id",
+              element: <EditBranchForm />,
+            },
+            { path: "branches", element: <BranchList /> },
+            {
+              path: "add/branch/admin",
+              element: <AddBranchAdmin />,
+            },
           ],
         },
       ],
