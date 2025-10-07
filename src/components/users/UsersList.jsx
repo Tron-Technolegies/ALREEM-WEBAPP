@@ -43,7 +43,7 @@ const UsersList = () => {
   }, []);
 
   const fetchMembers = () => {
-    API.get("/members/view_members")
+    API.get("/members/view_members", { withCredentials: true })
       .then((res) => setMembers(res.data))
       .catch((err) => console.error("Error fetching members:", err));
   };
