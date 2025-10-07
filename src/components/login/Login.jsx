@@ -28,7 +28,7 @@ const Login = () => {
       formData.append("password", password);
 
       // API call to Django backend
-      const response = await API.post("/members/admin_login", formData);
+      const response = await API.post("/members/admin_login", formData, { withCredentials: true });
 
       setLoading(false);
 
