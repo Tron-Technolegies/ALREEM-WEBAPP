@@ -32,11 +32,21 @@ const Sidebar = () => {
   const logout = () => {
     API.post("/members/admin_logout").then((res) => {
       if (res.data.status === "success") {
-        // 1. Clear tokens/cookies/localStorage
+        // 1. Clear tokens
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
 
-        // 2. Redirect & replace history (so back button won't go to dashboard)
+        // 2. Clear JWT cookie (if stored in cookie)
+        document.cookie = "jwt=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+        // 3. Prevent back navigation (disable browser cache)
+        window.history.pushState(null, "", "/");
+        window.onpopstate = function () {
+          //window.onpopstate handler — so pressing the back button forces redirection to login.
+          navigate("/", { replace: true }); //replace: true ensures React Router replaces history (no backward navigation).
+        };
+
+        // 4. Redirect safely
         navigate("/", { replace: true });
       } else {
         console.error("Logout failed:", res.data.message);
@@ -141,7 +151,7 @@ const Sidebar = () => {
           onClick={() => handleMenuClick("Settings")}
         >
           <IoMdSettings className="menu-icon" />
-          <span className="menu-text">Settings</span>
+          <span className="menu-text">Branch Admin</span>
         </Link>
       </div>
 

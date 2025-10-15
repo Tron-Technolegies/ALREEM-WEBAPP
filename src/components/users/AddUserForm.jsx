@@ -6,9 +6,11 @@ export default function AddUserForm() {
   const navigate = useNavigate();
 
   const [plans, setPlans] = useState([]);
+  const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [formData, setFormData] = useState({
+    branch: "",
     name: "",
     phone: "",
     email: "",
@@ -29,21 +31,27 @@ export default function AddUserForm() {
 
   const bloodTypes = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
+  // ✅ Fetch branches and plans
   useEffect(() => {
-    const fetchPlans = async () => {
+    const fetchData = async () => {
       try {
-        const res = await API.get("/members/view_plans");
-        if (res.data.plans) setPlans(res.data.plans);
+        const [plansRes, branchesRes] = await Promise.all([
+          API.get("/members/view_plans"),
+          API.get("/members/view-branches"),
+        ]);
+
+        if (plansRes.data.plans) setPlans(plansRes.data.plans);
+        if (branchesRes.data.branches) setBranches(branchesRes.data.branches);
       } catch (err) {
-        console.error("Failed to fetch plans", err);
+        console.error("Failed to fetch data", err);
       } finally {
         setLoading(false);
       }
     };
-    fetchPlans();
+    fetchData();
   }, []);
 
-  // Handle input changes and auto-due calculation
+  // ✅ Handle input changes and auto-due calculation
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => {
@@ -59,7 +67,7 @@ export default function AddUserForm() {
     });
   };
 
-  // Handle form submission
+  // ✅ Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -115,6 +123,17 @@ export default function AddUserForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             {/* Left Column */}
             <div className="space-y-4">
+              <Select
+                label="Branch"
+                name="branch"
+                value={formData.branch}
+                options={branches.map((b) => ({
+                  value: b.id,
+                  label: b.branch_name || b.name || `Branch ${b.id}`,
+                }))}
+                onChange={handleChange}
+                disabled={loading || branches.length === 0}
+              />
               <Input label="Name" name="name" value={formData.name} onChange={handleChange} />
               <Input
                 label="Phone number"
@@ -230,6 +249,7 @@ export default function AddUserForm() {
                 />
               </div>
             </div>
+            <div></div>
           </div>
         </div>
 

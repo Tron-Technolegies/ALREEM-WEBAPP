@@ -1,14 +1,37 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
-const ErrorPage = () => {
+export default function ErrorPage() {
   return (
-    <div className="text-center text-2xl m-40">
-      404 not found!!!!
-      <div className="m-4 bg-gray-200 max-w-[100px] mx-auto rounded-xl p-2">
-        <a href="/">Home</a>
-      </div>
+    <div
+      style={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        textAlign: "center",
+        backgroundColor: "#f9fafb",
+      }}
+    >
+      <h1 style={{ fontSize: "4rem", color: "#1e3a8a" }}>404</h1>
+      <h2 style={{ marginBottom: "1rem" }}>Page Not Found</h2>
+      <p style={{ color: "#6b7280" }}>
+        Sorry, you don’t have permission or this page doesn’t exist.
+      </p>
+      <Link
+        to="/"
+        style={{
+          marginTop: "20px",
+          padding: "10px 20px",
+          backgroundColor: "#2563eb",
+          color: "#fff",
+          borderRadius: "6px",
+          textDecoration: "none",
+        }}
+      >
+        Go to Login
+      </Link>
     </div>
   );
-};
-
-export default ErrorPage;
+}

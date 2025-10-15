@@ -41,7 +41,7 @@ export default function PendingList() {
     }
   };
 
-  // Menu handlers
+  // ✅ Menu handlers
   const handleClick = (event, member) => {
     setAnchorEl(event.currentTarget);
     setSelectedMember(member);
@@ -52,7 +52,7 @@ export default function PendingList() {
     setSelectedMember(null);
   };
 
-  // Example actions
+  // ✅ Example actions
   const handleViewProfile = () => {
     console.log("View profile:", selectedMember);
     handleClose();
@@ -73,12 +73,6 @@ export default function PendingList() {
     handleClose();
   };
 
-  // Compute paid amount
-  const getPaidAmount = (member) => {
-    const paid = (member.total_fee || 0) - (member.due_amount || 0);
-    return paid;
-  };
-
   return (
     <Paper className="rounded-lg bg-white p-4">
       {/* Header */}
@@ -88,7 +82,7 @@ export default function PendingList() {
 
       <Box mb={2}>
         <Typography variant="h6" fontWeight={500}>
-          Pending List
+          Pending Members List
         </Typography>
       </Box>
 
@@ -106,25 +100,28 @@ export default function PendingList() {
           <Table>
             <TableHead className="bg-gray-100">
               <TableRow>
-                <TableCell>User</TableCell>
-                <TableCell>Plan</TableCell>
-                <TableCell>Mob Number</TableCell>
-                <TableCell>Amount</TableCell>
-                <TableCell>Paid</TableCell>
-                <TableCell>Pending</TableCell>
-                <TableCell>Action</TableCell>
+                <TableCell>Name</TableCell>
+                <TableCell>Phone</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Due Amount (₹)</TableCell>
+                <TableCell>Expire Date</TableCell>
+                <TableCell>Branch ID</TableCell>
+                <TableCell align="center">Actions</TableCell>
               </TableRow>
             </TableHead>
+
             <TableBody>
               {members.map((member) => (
                 <TableRow key={member.id} className="hover:bg-gray-50">
                   <TableCell>{member.name}</TableCell>
-                  <TableCell>{member.plan_type || "N/A"}</TableCell>
                   <TableCell>{member.phone}</TableCell>
-                  <TableCell>₹ {member.total_fee || 0}</TableCell>
-                  <TableCell>₹ {getPaidAmount(member)}</TableCell>
-                  <TableCell>₹ {member.due_amount || 0}</TableCell>
-                  <TableCell>
+                  <TableCell>{member.email || "N/A"}</TableCell>
+                  <TableCell sx={{ color: "red", fontWeight: 600 }}>
+                    ₹ {member.due_amount}
+                  </TableCell>
+                  <TableCell>{member.expire_date || "N/A"}</TableCell>
+                  <TableCell>{member.branch_id || "N/A"}</TableCell>
+                  <TableCell align="center">
                     <IconButton onClick={(e) => handleClick(e, member)}>
                       <MoreVertIcon />
                     </IconButton>

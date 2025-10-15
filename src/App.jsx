@@ -24,9 +24,7 @@ import AddBranchForm from "./components/Branch/AddBranchForm";
 import BranchList from "./components/Branch/BranchList";
 import AddBranchAdmin from "./components/Branchadmin/AddBranchAdmin";
 import EditBranchForm from "./components/Branch/EditBranchForm";
-// import Sidebar from "./components/layout/Sidebar";
-// import Navbar from "./components/layout/Navbar";
-// import Tron from "./pages/Tron";
+import ProtectedRoute from "./utils/ProtectedRoute";
 
 const App = () => {
   const router = createBrowserRouter([
@@ -39,57 +37,33 @@ const App = () => {
           element: <LoginPage />,
         },
         {
-          element: <Layout />,
+          element: <ProtectedRoute />,
           children: [
-            { path: "dashboard", element: <Dashboard /> },
-            { path: "users", element: <UsersListPage /> },
-            { path: "users/add", element: <AddUserForm /> },
-            { path: "users/:id/edit", element: <EditUserProfileForm /> },
-            { path: "view/staffs", element: <ViewStaffs /> },
             {
-              path: "add/staffs",
-              element: <AddStaffs />,
-            },
-            { path: "attendance", element: <AttendanceOverview /> },
-            {
-              path: "invoice",
-              element: <InvoiceHistory />,
-            },
-            { path: "pending", element: <PendingList /> },
-            { path: "pending/:id/edit", element: <PendingSingleUserForm /> },
-            { path: "expired", element: <ExpiredMemberList /> },
-            {
-              path: "settings",
-              element: <AccountSettings />,
-            },
-            {
-              path: "plans/add",
-              element: <AddPlanForm />,
-            },
-            {
-              path: "plans",
-              element: <PlansList />,
-            },
-            {
-              path: "plans/:id/edit",
-              element: <EditPlan />,
-            },
-
-            { path: "staff/:id", element: <SingleStaff /> },
-            { path: "edit_trainer_staff/:id", element: <EditStaff /> },
-
-            {
-              path: "add/branch",
-              element: <AddBranchForm />,
-            },
-            {
-              path: "edit_branch/:id",
-              element: <EditBranchForm />,
-            },
-            { path: "branches", element: <BranchList /> },
-            {
-              path: "add/branch/admin",
-              element: <AddBranchAdmin />,
+              element: <Layout />,
+              children: [
+                { path: "dashboard", element: <Dashboard /> },
+                { path: "users", element: <UsersListPage /> },
+                { path: "users/add", element: <AddUserForm /> },
+                { path: "users/:id/edit", element: <EditUserProfileForm /> },
+                { path: "view/staffs", element: <ViewStaffs /> },
+                { path: "add/staffs", element: <AddStaffs /> },
+                { path: "attendance", element: <AttendanceOverview /> },
+                { path: "invoice", element: <InvoiceHistory /> },
+                { path: "pending", element: <PendingList /> },
+                { path: "pending/:id/edit", element: <PendingSingleUserForm /> },
+                { path: "expired", element: <ExpiredMemberList /> },
+                { path: "settings", element: <AccountSettings /> },
+                { path: "plans/add", element: <AddPlanForm /> },
+                { path: "plans", element: <PlansList /> },
+                { path: "plans/:id/edit", element: <EditPlan /> },
+                { path: "staff/:id", element: <SingleStaff /> },
+                { path: "edit_trainer_staff/:id", element: <EditStaff /> },
+                { path: "add/branch", element: <AddBranchForm /> },
+                { path: "edit_branch/:id", element: <EditBranchForm /> },
+                { path: "branches", element: <BranchList /> },
+                { path: "add/branch/admin", element: <AddBranchAdmin /> },
+              ],
             },
           ],
         },
